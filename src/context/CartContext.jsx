@@ -15,13 +15,11 @@ function getSavedCart() {
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState(getSavedCart);
 
-  // persist function – stable (useCallback se wrap)
   const persist = useCallback((nextItems) => {
     setCartItems(nextItems);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(nextItems));
   }, []);
 
-  // addToCart – stable
   const addToCart = useCallback((product, quantity = 1) => {
     const qty = Math.max(1, Number(quantity) || 1);
     setCartItems((prevItems) => {
@@ -39,7 +37,6 @@ export function CartProvider({ children }) {
     });
   }, [persist]);
 
-  // updateQuantity – stable
   const updateQuantity = useCallback((productId, quantity) => {
     const qty = Math.max(1, Number(quantity) || 1);
     setCartItems((prevItems) => {
@@ -51,7 +48,6 @@ export function CartProvider({ children }) {
     });
   }, [persist]);
 
-  // removeFromCart – stable
   const removeFromCart = useCallback((productId) => {
     setCartItems((prevItems) => {
       const filtered = prevItems.filter((item) => item.id !== productId);
@@ -60,29 +56,26 @@ export function CartProvider({ children }) {
     });
   }, [persist]);
 
-  // clearCart – stable
   const clearCart = useCallback(() => {
     setCartItems([]);
     persist([]);
   }, [persist]);
 
-  // derived values
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  // value object – dependencies mein saare functions aur values daale hain
   const value = useMemo(
-  () => ({
-    cartItems,
-    cartCount,
-    subtotal,
-    addToCart,
-    updateQuantity,
-    removeFromCart,
-    clearCart,
-  }),
-  [cartItems, cartCount, subtotal, addToCart, updateQuantity, removeFromCart, clearCart] // ✅ ab sab dependencies hain
-);
+    () => ({
+      cartItems,
+      cartCount,
+      subtotal,
+      addToCart,
+      updateQuantity,
+      removeFromCart,
+      clearCart,
+    }),
+    [cartItems, cartCount, subtotal, addToCart, updateQuantity, removeFromCart, clearCart]
+  );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
