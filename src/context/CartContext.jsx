@@ -72,17 +72,17 @@ export function CartProvider({ children }) {
 
   // value object – dependencies mein saare functions aur values daale hain
   const value = useMemo(
-    () => ({
-      cartItems,
-      cartCount,
-      subtotal,
-      addToCart,
-      updateQuantity,
-      removeFromCart,
-      clearCart,
-    }),
-    [cartItems, cartCount, subtotal, addToCart, updateQuantity, removeFromCart, clearCart]
-  );
+  () => ({
+    cartItems,
+    cartCount,
+    subtotal,
+    addToCart,
+    updateQuantity,
+    removeFromCart,
+    clearCart,
+  }),
+  [cartItems, cartCount, subtotal, addToCart, updateQuantity, removeFromCart, clearCart] // ✅ ab sab dependencies hain
+);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
